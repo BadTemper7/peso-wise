@@ -78,3 +78,100 @@ input:-webkit-autofill {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Theme-safe native controls */
+select,
+select option,
+select optgroup {
+  color: var(--text);
+  background-color: var(--surface);
+}
+
+select {
+  border-color: var(--border);
+  color-scheme: light;
+}
+
+:root.dark select {
+  color-scheme: dark;
+}
+
+select option:checked,
+select option:hover,
+select option:focus {
+  color: var(--text);
+  background-color: var(--surface-soft);
+}
+
+select:disabled,
+select option:disabled {
+  color: var(--muted);
+  opacity: 0.72;
+}
+
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, rgba(226, 232, 240, 0.95) 0%, rgba(241, 245, 249, 1) 46%, rgba(226, 232, 240, 0.95) 100%);
+  background-size: 220% 100%;
+  animation: skeleton-shimmer 1.35s ease-in-out infinite;
+}
+
+.dark .skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(30, 41, 59, 0.78) 0%, rgba(51, 65, 85, 0.72) 46%, rgba(30, 41, 59, 0.78) 100%);
+  background-size: 220% 100%;
+}
+
+.loading-bar {
+  animation: loading-bar 1.15s ease-in-out infinite;
+}
+
+.loading-dot {
+  animation: loading-dot 1.05s ease-in-out infinite;
+}
+
+.loading-dot:nth-child(2) { animation-delay: 0.12s; }
+.loading-dot:nth-child(3) { animation-delay: 0.24s; }
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -20% 0; }
+}
+
+@keyframes loading-bar {
+  0% { transform: translateX(-120%); }
+  55% { transform: translateX(85%); }
+  100% { transform: translateX(220%); }
+}
+
+@keyframes loading-dot {
+  0%, 75%, 100% { opacity: 0.35; transform: translateY(0); }
+  38% { opacity: 1; transform: translateY(-2px); }
+}
+
+/* Force readable native dropdown menus across browsers and themes. */
+:root:not(.dark) select,
+:root:not(.dark) select option,
+:root:not(.dark) select optgroup {
+  color: #0f172a !important;
+  background-color: #ffffff !important;
+}
+
+:root.dark select,
+:root.dark select option,
+:root.dark select optgroup {
+  color: #f8fafc !important;
+  background-color: #0f1d30 !important;
+}
+
+:root:not(.dark) select option:checked,
+:root:not(.dark) select option:hover {
+  color: #0f172a !important;
+  background-color: #e2e8f0 !important;
+}
+
+:root.dark select option:checked,
+:root.dark select option:hover {
+  color: #ffffff !important;
+  background-color: #1e3a52 !important;
+}

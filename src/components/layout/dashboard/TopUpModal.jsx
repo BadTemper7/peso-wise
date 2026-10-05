@@ -49,7 +49,7 @@ const TopUpModal = ({ wallet, onClose, onTopUp }) => {
             <div className="min-w-0">
               <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Top up</p>
               <p className="truncate text-sm font-semibold text-slate-900 dark:text-white">{wallet.name}</p>
-              <p className="text-[11px] text-slate-400">Current balance {formatPeso(wallet.balance, { decimals: 2 })}</p>
+              <p className="text-[11px] text-slate-400">Current balance {formatPeso(wallet.balance, { decimals: 2 })}</p><p className="mt-0.5 truncate text-[10px] text-slate-400">Created by: {wallet.creatorName || wallet.creator?.full_name || "Workspace member"}</p>
             </div>
           </div>
 

@@ -15,6 +15,7 @@ export default function DashboardLayout() {
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
+    document.documentElement.style.colorScheme = theme;
     window.localStorage.setItem("pesowise-theme", theme);
   }, [theme]);
 

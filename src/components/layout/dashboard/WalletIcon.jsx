@@ -6,6 +6,7 @@ const iconMap = {
   mobile: FiSmartphone,
   card: FiCreditCard,
   bank: FiArchive,
+  savings: FiArchive,
 };
 
 const WalletIcon = ({ type, className = "h-4 w-4" }) => {

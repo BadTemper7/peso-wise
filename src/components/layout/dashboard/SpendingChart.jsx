@@ -83,7 +83,9 @@ const buildDailyData = (transactions, monthValue) => {
   const totals = new Map();
 
   transactions.forEach((transaction) => {
-    if (transaction.amount >= 0 || transaction.category === "Transfer") return;
+    // All wallet-to-wallet movements, including automatic Savings transfers,
+    // borrowing, and repayments, must stay out of expense reporting.
+    if (transaction.amount >= 0 || transaction.type === "transfer") return;
     const day = parseTransactionDay(transaction.date);
     if (!day || day > dayCount) return;
     totals.set(day, (totals.get(day) ?? 0) + Math.abs(transaction.amount));

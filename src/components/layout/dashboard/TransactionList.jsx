@@ -30,6 +30,9 @@ const categoryIcons = {
   Payment: FiCheckCircle,
   Receive: FiArrowDownLeft,
   "Top Up": FiPlusCircle,
+  "Month-end Savings": FiArchive,
+  "Borrowed from Savings": FiArrowDownLeft,
+  "Savings Repayment": FiRefreshCw,
 };
 
 const categoryTone = {
@@ -44,6 +47,9 @@ const categoryTone = {
   Payment: "bg-sky-100 text-sky-600 dark:bg-sky-400/15 dark:text-sky-300",
   Receive: "bg-emerald-100 text-emerald-600 dark:bg-emerald-400/15 dark:text-emerald-300",
   "Top Up": "bg-cyan-100 text-cyan-600 dark:bg-cyan-400/15 dark:text-cyan-300",
+  "Month-end Savings": "bg-violet-100 text-violet-600 dark:bg-violet-400/15 dark:text-violet-300",
+  "Borrowed from Savings": "bg-sky-100 text-sky-600 dark:bg-sky-400/15 dark:text-sky-300",
+  "Savings Repayment": "bg-indigo-100 text-indigo-600 dark:bg-indigo-400/15 dark:text-indigo-300",
 };
 
 const TransactionList = ({
@@ -119,7 +125,7 @@ const TransactionList = ({
           ].join(" ")}
         >
           {visibleTransactions.map((transaction) => {
-            const transfer = transaction.category === "Transfer";
+            const transfer = transaction.type === "transfer";
             const topUp = transaction.category === "Top Up";
             const received = transaction.category === "Receive";
             const income = transaction.amount > 0 && !transfer && !topUp && !received;
@@ -157,7 +163,7 @@ const TransactionList = ({
                     {positive ? "+" : "−"}{formatPeso(Math.abs(transaction.amount))}
                   </p>
                   <p className="mt-0.5 text-[9px] text-slate-400 dark:text-slate-500">
-                    {transfer ? "Transfer" : topUp ? "Top up" : received ? "Received" : income ? "Income" : "Expense"}
+                    {transaction.transfer_kind === "month_end_savings" ? "Month-end transfer" : transaction.transfer_kind === "savings_borrow" ? "Borrowed from Savings" : transaction.transfer_kind === "savings_repayment" ? "Savings repayment" : transfer ? "Transfer" : topUp ? "Top up" : received ? "Received" : income ? "Income" : "Expense"}
                   </p>
                 </div>
               </div>

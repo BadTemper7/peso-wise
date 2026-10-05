@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { getTodayValue } from "../../utils/date";
 import Modal from "../common/Modal";
 import { Field, inputClass, PrimaryButton, SecondaryButton, textareaClass } from "../common/FormControls";
 import { transactionService } from "../../services/transactionService";
 import { getFriendlyError } from "../../utils/errors";
 import { useToast } from "../../contexts/ToastContext";
+import { walletOptionLabel } from "../../utils/presentation";
 
-const today = () => new Date().toISOString().slice(0, 10);
-const emptyForm = { type: "expense", amount: "", walletId: "", categoryId: "", fromWalletId: "", toWalletId: "", description: "", transactionDate: today() };
+const emptyForm = { type: "expense", amount: "", walletId: "", categoryId: "", fromWalletId: "", toWalletId: "", description: "", transactionDate: getTodayValue() };
 
 export default function TransactionFormModal({ open, onClose, workspaceId, userId, wallets, categories, initialTransaction, presetType, onSaved }) {
   const toast = useToast();
@@ -25,15 +26,17 @@ export default function TransactionFormModal({ open, onClose, workspaceId, userI
         fromWalletId: initialTransaction.from_wallet_id || "",
         toWalletId: initialTransaction.to_wallet_id || "",
         description: initialTransaction.description || "",
-        transactionDate: initialTransaction.transaction_date || today(),
+        transactionDate: initialTransaction.transaction_date || getTodayValue(),
       });
     } else {
       const type = presetType || "expense";
-      setForm({ ...emptyForm, type, walletId: wallets[0]?.id || "", fromWalletId: wallets[0]?.id || "", toWalletId: wallets[1]?.id || "", categoryId: categories.find((category) => category.type === type)?.id || "" });
+      const regular = wallets.filter((wallet) => !wallet.is_savings);
+      setForm({ ...emptyForm, type, walletId: regular[0]?.id || "", fromWalletId: regular[0]?.id || "", toWalletId: regular[1]?.id || wallets.find((wallet) => wallet.is_savings)?.id || "", categoryId: categories.find((category) => category.type === type)?.id || "" });
     }
   }, [open, initialTransaction, presetType, wallets, categories]);
 
   const availableCategories = useMemo(() => categories.filter((category) => category.type === form.type), [categories, form.type]);
+  const regularWallets = useMemo(() => wallets.filter((wallet) => !wallet.is_savings), [wallets]);
 
   const updateType = (type) => setForm((current) => ({ ...current, type, categoryId: categories.find((category) => category.type === type)?.id || "" }));
 
@@ -63,8 +66,8 @@ export default function TransactionFormModal({ open, onClose, workspaceId, userI
     <form id="transaction-form" onSubmit={submit} className="space-y-5">
       <div className="grid grid-cols-3 gap-2">{["income","expense","transfer"].map((type) => <button key={type} type="button" disabled={editing && initialTransaction?.type === "transfer"} onClick={() => updateType(type)} className={`rounded-xl border px-3 py-3 text-xs font-bold capitalize transition ${form.type === type ? "border-teal-500 bg-teal-50 text-teal-700 dark:bg-teal-400/10 dark:text-teal-300" : "border-slate-200 text-slate-500 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-white/[0.04]"}`}>{type}</button>)}</div>
       <Field label="Amount" required><div className="relative"><span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">₱</span><input type="number" min="0.01" step="0.01" value={form.amount} onChange={(e) => setForm((v) => ({ ...v, amount: e.target.value }))} className={`${inputClass} pl-8`} placeholder="0.00" /></div></Field>
-      {form.type === "transfer" ? <div className="grid gap-4 sm:grid-cols-2"><Field label="From wallet" required><select value={form.fromWalletId} onChange={(e) => setForm((v) => ({ ...v, fromWalletId: e.target.value }))} className={inputClass}><option value="">Select wallet</option>{wallets.map((wallet) => <option key={wallet.id} value={wallet.id}>{wallet.name}</option>)}</select></Field><Field label="To wallet" required><select value={form.toWalletId} onChange={(e) => setForm((v) => ({ ...v, toWalletId: e.target.value }))} className={inputClass}><option value="">Select wallet</option>{wallets.map((wallet) => <option key={wallet.id} value={wallet.id}>{wallet.name}</option>)}</select></Field></div> : <div className="grid gap-4 sm:grid-cols-2"><Field label="Wallet" required><select value={form.walletId} onChange={(e) => setForm((v) => ({ ...v, walletId: e.target.value }))} className={inputClass}><option value="">Select wallet</option>{wallets.map((wallet) => <option key={wallet.id} value={wallet.id}>{wallet.name}</option>)}</select></Field><Field label="Category" required><select value={form.categoryId} onChange={(e) => setForm((v) => ({ ...v, categoryId: e.target.value }))} className={inputClass}><option value="">Select category</option>{availableCategories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></Field></div>}
-      <Field label="Date" required><input type="date" value={form.transactionDate} onChange={(e) => setForm((v) => ({ ...v, transactionDate: e.target.value }))} className={inputClass} /></Field>
+      {form.type === "transfer" ? <div className="grid gap-4 sm:grid-cols-2"><Field label="From wallet" required><select value={form.fromWalletId} onChange={(e) => setForm((v) => ({ ...v, fromWalletId: e.target.value }))} className={inputClass}><option value="">Select wallet</option>{regularWallets.map((wallet) => <option key={wallet.id} value={wallet.id}>{walletOptionLabel(wallet, userId)}</option>)}</select></Field><Field label="To wallet" required><select value={form.toWalletId} onChange={(e) => setForm((v) => ({ ...v, toWalletId: e.target.value }))} className={inputClass}><option value="">Select wallet</option>{wallets.map((wallet) => <option key={wallet.id} value={wallet.id}>{walletOptionLabel(wallet, userId)}</option>)}</select></Field></div> : <div className="grid gap-4 sm:grid-cols-2"><Field label="Wallet" required><select value={form.walletId} onChange={(e) => setForm((v) => ({ ...v, walletId: e.target.value }))} className={inputClass}><option value="">Select wallet</option>{regularWallets.map((wallet) => <option key={wallet.id} value={wallet.id}>{walletOptionLabel(wallet, userId)}</option>)}</select></Field><Field label="Category" required><select value={form.categoryId} onChange={(e) => setForm((v) => ({ ...v, categoryId: e.target.value }))} className={inputClass}><option value="">Select category</option>{availableCategories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></Field></div>}
+      <Field label="Date" required><input type="date" max={getTodayValue()} value={form.transactionDate} onChange={(e) => setForm((v) => ({ ...v, transactionDate: e.target.value }))} className={inputClass} /></Field>
       <Field label="Description" required={form.type !== "transfer"}><textarea value={form.description} onChange={(e) => setForm((v) => ({ ...v, description: e.target.value }))} className={textareaClass} placeholder={form.type === "expense" ? "What did you spend on?" : form.type === "income" ? "Where did the income come from?" : "Optional transfer note"} required={form.type !== "transfer"} /></Field>
     </form>
   </Modal>;

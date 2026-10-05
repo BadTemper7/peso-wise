@@ -2,3 +2,6 @@ project_id = "peso-wise"
 
 [functions.send-workspace-invite]
 verify_jwt = true
+
+[functions.process-month-end-savings]
+verify_jwt = false

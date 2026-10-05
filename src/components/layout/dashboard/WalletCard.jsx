@@ -23,10 +23,10 @@ const WalletCard = ({
   const cardAmount = `${isCredit && isNegative ? "−" : ""}${formatPeso(Math.abs(wallet.balance), { decimals: 0 })}`;
 
   const sizeClass = mobileSingle
-    ? "h-[146px] w-full max-w-[272px] rounded-[20px] p-4"
+    ? "h-[158px] w-full max-w-[286px] rounded-[20px] p-4"
     : fluid
-      ? "h-[120px] min-w-[168px] max-w-[220px] flex-[1_0_168px] snap-start rounded-[16px] p-3.5"
-      : "h-[112px] w-[146px] rounded-[16px] p-3 sm:h-[120px] sm:w-[158px] sm:p-3.5";
+      ? "h-[134px] min-w-[185px] max-w-[235px] flex-[1_0_185px] snap-start rounded-[16px] p-3.5"
+      : "h-[126px] w-[158px] rounded-[16px] p-3 sm:h-[134px] sm:w-[175px] sm:p-3.5";
 
   return (
     <button
@@ -57,14 +57,17 @@ const WalletCard = ({
         </p>
       </div>
 
-      <div className="relative mt-auto flex items-center justify-between gap-2">
-        <span className={`flex h-5 items-center gap-1.5 font-semibold tracking-[0.04em] text-white/70 ${mobileSingle ? "text-[9px]" : "text-[8px] sm:text-[9px]"}`}>
-          <WalletIcon type={wallet.icon} className={mobileSingle ? "h-4 w-4" : "h-3.5 w-3.5"} />
-          {accountMeta[wallet.id] ?? wallet.type.toUpperCase()}
-        </span>
-        <span className={`${mobileSingle ? "text-[9px]" : "text-[8px]"} font-bold uppercase tracking-[0.12em] text-white/55`}>
-          {wallet.type === "credit" ? "Card" : wallet.type === "bank" ? "Bank" : "Wallet"}
-        </span>
+      <div className="relative mt-auto min-w-0">
+        <p className={`${mobileSingle ? "text-[9px]" : "text-[8px]"} truncate font-medium text-white/65`}>Created by: {wallet.creatorName || wallet.creator?.full_name || "Workspace member"}</p>
+        <div className="mt-1 flex items-center justify-between gap-2">
+          <span className={`flex h-5 min-w-0 items-center gap-1.5 font-semibold tracking-[0.04em] text-white/70 ${mobileSingle ? "text-[9px]" : "text-[8px] sm:text-[9px]"}`}>
+            <WalletIcon type={wallet.icon} className={mobileSingle ? "h-4 w-4" : "h-3.5 w-3.5"} />
+            <span className="truncate">{wallet.is_savings ? "SAVINGS" : accountMeta[wallet.id] ?? wallet.type.toUpperCase()}</span>
+          </span>
+          <span className={`${mobileSingle ? "text-[9px]" : "text-[8px]"} shrink-0 font-bold uppercase tracking-[0.12em] text-white/55`}>
+            {wallet.is_savings ? "Reserve" : wallet.type === "credit" ? "Card" : "Wallet"}
+          </span>
+        </div>
       </div>
     </button>
   );
