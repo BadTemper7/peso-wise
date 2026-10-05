@@ -67,9 +67,25 @@ export const walletService = {
   async update(walletId, values) {
     const { data, error } = await supabase
       .from("wallets")
-      .update({ name: values.name.trim(), type: values.type, currency: values.currency })
+      .update({
+        name: values.name.trim(),
+        type: values.type,
+        currency: values.currency,
+        opening_balance_effective_date: values.openingBalanceEffectiveDate,
+      })
       .eq("id", walletId)
       .select(WALLET_SELECT)
+      .single();
+    if (error) throw error;
+    return data;
+  },
+
+  async remove(walletId) {
+    const { data, error } = await supabase
+      .from("wallets")
+      .delete()
+      .eq("id", walletId)
+      .select("id,name")
       .single();
     if (error) throw error;
     return data;

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FiArchive, FiCalendar, FiCreditCard, FiDollarSign, FiEdit2, FiPlus, FiRefreshCw, FiRotateCcw, FiSmartphone } from "react-icons/fi";
+import { FiArchive, FiCalendar, FiCreditCard, FiDollarSign, FiEdit2, FiPlus, FiRefreshCw, FiRotateCcw, FiSmartphone, FiTrash2 } from "react-icons/fi";
 import { useSearchParams } from "react-router";
 import ConfirmDialog from "../components/common/ConfirmDialog";
 import EmptyState from "../components/common/EmptyState";
@@ -38,12 +38,14 @@ export default function Wallets() {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [archiving, setArchiving] = useState(null);
+  const [removing, setRemoving] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [monthOpen, setMonthOpen] = useState(false);
   const [savingsAction, setSavingsAction] = useState(null);
   const reconciledWorkspace = useRef(null);
 
   const canManage = ["owner", "admin"].includes(role) || (role === "member" && Boolean(activeWorkspace.settings?.member_can_manage_wallets));
+  const canRemove = role === "owner";
   const canMoveSavings = role !== "viewer";
 
   const load = useCallback(async ({ silent = false } = {}) => {
@@ -101,6 +103,21 @@ export default function Wallets() {
     finally { setActionLoading(false); }
   };
 
+  const removeWallet = async () => {
+    if (!removing || !canRemove) return;
+    setActionLoading(true);
+    try {
+      await walletService.remove(removing.id);
+      toast.success("Wallet removed.");
+      setRemoving(null);
+      await load({ silent: true });
+    } catch (error) {
+      toast.error(getFriendlyError(error, "Could not remove the wallet."));
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const saveSavingsAction = async ({ mode, walletId, loanId, amount, notes, transactionDate }) => {
     try {
       if (mode === "borrow") await savingsService.borrow({ workspaceId: activeWorkspace.id, destinationWalletId: walletId, amount, notes, transactionDate });
@@ -126,10 +143,30 @@ export default function Wallets() {
 
     <SavingsLoanHistory loans={loans} currency={activeWorkspace.currency} canRepay={canMoveSavings} onRepay={() => setSavingsAction("repay")} />
 
-    {archived.length > 0 && <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[#0d1a2b]"><div className="mb-4"><h2 className="text-sm font-bold text-slate-900 dark:text-white">Archived wallets</h2><p className="mt-1 text-xs text-slate-400">Archived wallets remain available in historical transactions and reports.</p></div><div className="space-y-2">{archived.map((wallet) => <div key={wallet.id} className="flex items-center gap-3 rounded-xl bg-slate-50 p-3 dark:bg-white/[0.035]"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-200 text-slate-500 dark:bg-white/[0.08]"><FiArchive /></span><div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold text-slate-800 dark:text-slate-100">{wallet.name}</p><p className="text-[10px] capitalize text-slate-400">{wallet.type} · {formatCurrency(wallet.current_balance, wallet.currency)} · Created by {walletCreatorName(wallet, user.id)}</p></div>{canManage && <SecondaryButton onClick={() => setArchiving(currentWallets.find((item) => item.id === wallet.id) || wallet)} className="h-9"><FiRotateCcw /> Restore</SecondaryButton>}</div>)}</div></section>}
+    {archived.length > 0 && <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[#0d1a2b]"><div className="mb-4"><h2 className="text-sm font-bold text-slate-900 dark:text-white">Archived wallets</h2><p className="mt-1 text-xs text-slate-400">Archived wallets remain available in historical transactions and reports.</p></div><div className="space-y-2">{archived.map((wallet) => <div key={wallet.id} className="flex flex-col gap-3 rounded-xl bg-slate-50 p-3 dark:bg-white/[0.035] sm:flex-row sm:items-center"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-200 text-slate-500 dark:bg-white/[0.08]"><FiArchive /></span><div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold text-slate-800 dark:text-slate-100">{wallet.name}</p><p className="text-[10px] capitalize text-slate-400">{wallet.type} · {formatCurrency(wallet.current_balance, wallet.currency)} · Created by {walletCreatorName(wallet, user.id)}</p></div><div className="flex flex-wrap gap-2">{canManage && <SecondaryButton onClick={() => setArchiving(currentWallets.find((item) => item.id === wallet.id) || wallet)} className="h-9"><FiRotateCcw /> Restore</SecondaryButton>}{canRemove && <SecondaryButton onClick={() => setRemoving(currentWallets.find((item) => item.id === wallet.id) || wallet)} className="h-9 !border-rose-200 !text-rose-600 hover:!bg-rose-50 dark:!border-rose-500/30 dark:!text-rose-300 dark:hover:!bg-rose-500/10"><FiTrash2 /> Remove</SecondaryButton>}</div></div>)}</div></section>}
 
-    <WalletFormModal open={formOpen} onClose={() => { setFormOpen(false); setEditing(null); }} workspaceId={activeWorkspace.id} userId={user.id} currency={activeWorkspace.currency} wallet={editing} onSaved={() => load({ silent: true })} />
+    <WalletFormModal
+      open={formOpen}
+      onClose={() => { setFormOpen(false); setEditing(null); }}
+      workspaceId={activeWorkspace.id}
+      userId={user.id}
+      currency={activeWorkspace.currency}
+      wallet={editing}
+      canRemove={canRemove}
+      onRequestRemove={(walletToRemove) => { setFormOpen(false); setEditing(null); setRemoving(walletToRemove); }}
+      onSaved={() => load({ silent: true })}
+    />
     <ConfirmDialog open={Boolean(archiving)} onClose={() => setArchiving(null)} onConfirm={toggleArchive} title={archiving?.is_archived ? "Restore wallet?" : "Archive wallet?"} description={archiving?.is_archived ? "The wallet will be available for new transactions again." : "Existing transactions remain visible. The wallet cannot be used for new transactions while archived."} confirmLabel={archiving?.is_archived ? "Restore" : "Archive"} loading={actionLoading} />
+    <ConfirmDialog
+      open={Boolean(removing)}
+      onClose={() => setRemoving(null)}
+      onConfirm={removeWallet}
+      title="Remove wallet?"
+      description={`Remove ${removing?.name || "this wallet"} permanently? Only wallets with no transactions can be removed. Wallets with activity must be archived instead.`}
+      confirmLabel="Remove wallet"
+      loading={actionLoading}
+      danger
+    />
     <MonthPickerOverlay open={monthOpen} selectedMonth={selectedMonth} onSelect={setMonth} onClose={() => setMonthOpen(false)} />
     {(savingsAction === "borrow" || savingsAction === "repay") && currentSavingsWallet && <SavingsTransferModal mode={savingsAction} workspaceCurrency={activeWorkspace.currency} savingsWallet={currentSavingsWallet} wallets={regularCurrent} loans={loans} currentUserId={user.id} onClose={() => setSavingsAction(null)} onSubmit={saveSavingsAction} />}
   </div>;
