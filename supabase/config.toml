@@ -1,0 +1,4 @@
+project_id = "peso-wise"
+
+[functions.send-workspace-invite]
+verify_jwt = true
