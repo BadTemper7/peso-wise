@@ -70,6 +70,7 @@ export const walletService = {
       .update({
         name: values.name.trim(),
         type: values.type,
+        initial_balance: Number(values.initialBalance || 0),
         currency: values.currency,
         opening_balance_effective_date: values.openingBalanceEffectiveDate,
       })
