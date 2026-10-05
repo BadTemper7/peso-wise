@@ -36,7 +36,7 @@ Deno.serve(async (request) => {
         from: fromEmail,
         to: [invitation.email],
         subject: `You’re invited to ${invitation.workspace.name} on PesoWise`,
-        html: `<div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;color:#152238"><h2>Manage money together</h2><p>${invitation.inviter?.full_name || "A workspace admin"} invited you to <strong>${invitation.workspace.name}</strong> as a ${invitation.role}.</p><p><a href="${appUrl}/register?email=${encodeURIComponent(invitation.email)}" style="display:inline-block;background:#14b8a6;color:#041030;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:700">Open PesoWise</a></p><p style="color:#718096;font-size:12px">Sign in or register with ${invitation.email}. The invitation expires on ${new Date(invitation.expires_at).toLocaleDateString()}.</p></div>`,
+        html: `<div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;color:#152238"><h2>Manage money together</h2><p>${invitation.inviter?.full_name || "A workspace admin"} invited you to <strong>${invitation.workspace.name}</strong> as a ${invitation.role}.</p><p><a href="${appUrl}/register?mode=join&email=${encodeURIComponent(invitation.email)}" style="display:inline-block;background:#0d9488;color:#ffffff;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:700">Open PesoWise</a></p><p style="color:#718096;font-size:12px">Sign in or register with ${invitation.email}. The invitation expires on ${new Date(invitation.expires_at).toLocaleDateString()}.</p></div>`,
       }),
     });
     if (!response.ok) throw new Error(await response.text());

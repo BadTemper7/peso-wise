@@ -82,7 +82,7 @@ const ReceiveModal = ({ wallet, onClose, onReceive }) => {
               <button
                 type="button"
                 onClick={copyWalletName}
-                className="flex h-9 items-center gap-1.5 rounded-xl border border-emerald-200 bg-white px-3 text-[10px] font-bold text-emerald-700 transition hover:bg-emerald-50 dark:border-emerald-500/20 dark:bg-white/[0.04] dark:text-emerald-300"
+                className="flex h-9 items-center justify-center gap-1.5 rounded-xl border border-emerald-200 bg-white px-3 text-[10px] font-bold text-emerald-700 transition hover:bg-emerald-50 dark:border-emerald-500/20 dark:bg-white/[0.04] dark:text-emerald-300"
               >
                 <FiCopy className="h-3.5 w-3.5" />
                 {copied ? "Copied" : "Copy"}

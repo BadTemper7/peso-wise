@@ -9,13 +9,33 @@ export function Field({ label, htmlFor, hint, error, required, children }) {
 }
 
 export function LoadingDots({ className = "" }) {
-  return <span aria-hidden="true" className={`inline-flex items-center gap-1 ${className}`}>{[0, 1, 2].map((item) => <span key={item} className="loading-dot h-1.5 w-1.5 rounded-full bg-current" />)}</span>;
+  return <span aria-hidden="true" className={`inline-flex items-center justify-center gap-1 ${className}`}>{[0, 1, 2].map((item) => <span key={item} className="loading-dot h-1.5 w-1.5 rounded-full bg-current" />)}</span>;
 }
 
 export function PrimaryButton({ children, loading, disabled, className = "", ...props }) {
-  return <button {...props} aria-busy={loading || undefined} disabled={disabled || loading} className={`relative inline-flex h-11 items-center justify-center gap-2 overflow-hidden rounded-xl bg-teal-500 px-4 text-sm font-bold text-slate-950 shadow-sm transition hover:bg-teal-400 focus:outline-none focus:ring-4 focus:ring-teal-500/20 disabled:cursor-not-allowed disabled:opacity-55 ${className}`}>{loading && <LoadingDots />}{children}</button>;
+  return (
+    <button
+      {...props}
+      aria-busy={loading || undefined}
+      disabled={disabled || loading}
+      className={`relative inline-flex h-11 min-w-0 select-none items-center justify-center gap-2 overflow-hidden rounded-xl bg-teal-600 px-4 text-center text-sm font-bold leading-none text-white shadow-sm transition hover:bg-teal-500 active:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-500/20 disabled:cursor-not-allowed disabled:bg-slate-400 disabled:text-white disabled:opacity-60 dark:bg-teal-500 dark:hover:bg-teal-400 dark:active:bg-teal-600 dark:disabled:bg-slate-700 ${className}`}
+    >
+      <span className={`inline-flex min-w-0 items-center justify-center gap-2 ${loading ? "opacity-0" : ""}`}>{children}</span>
+      {loading && <span className="absolute inset-0 flex items-center justify-center"><LoadingDots /></span>}
+    </button>
+  );
 }
 
-export function SecondaryButton({ children, className = "", ...props }) {
-  return <button {...props} className={`inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-55 dark:border-slate-700 dark:bg-white/[0.04] dark:text-slate-200 dark:hover:bg-white/[0.07] ${className}`}>{children}</button>;
+export function SecondaryButton({ children, loading, disabled, className = "", ...props }) {
+  return (
+    <button
+      {...props}
+      aria-busy={loading || undefined}
+      disabled={disabled || loading}
+      className={`relative inline-flex h-11 min-w-0 select-none items-center justify-center gap-2 overflow-hidden rounded-xl border border-slate-200 bg-white px-4 text-center text-sm font-semibold leading-none text-slate-700 transition hover:bg-slate-50 active:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-55 dark:border-slate-700 dark:bg-white/[0.04] dark:text-slate-200 dark:hover:bg-white/[0.07] dark:active:bg-white/[0.1] ${className}`}
+    >
+      <span className={`inline-flex min-w-0 items-center justify-center gap-2 ${loading ? "opacity-0" : ""}`}>{children}</span>
+      {loading && <span className="absolute inset-0 flex items-center justify-center"><LoadingDots /></span>}
+    </button>
+  );
 }

@@ -10,7 +10,7 @@ const SectionPlaceholder = ({ eyebrow = "PesoWise", title, description, actionLa
         <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-950 dark:text-white">{title}</h1>
         <p className="mt-1 max-w-2xl text-sm text-slate-500 dark:text-slate-400">{description}</p>
       </div>
-      <button type="button" className="flex h-10 w-fit items-center gap-2 rounded-xl bg-[#0b4d86] px-4 text-xs font-bold text-white dark:bg-teal-500 dark:text-[#041b22]">
+      <button type="button" className="flex h-10 w-fit items-center justify-center gap-2 rounded-xl bg-[#0b4d86] px-4 text-center text-xs font-bold leading-none text-white dark:bg-teal-500 dark:text-white">
         <FiPlus className="h-4 w-4" /> {actionLabel}
       </button>
     </div>

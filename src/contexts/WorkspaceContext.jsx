@@ -106,7 +106,10 @@ export function WorkspaceProvider({ children }) {
 
   const activeWorkspace = workspaces.find((workspace) => workspace.id === activeWorkspaceId) || null;
   const initialized = !authLoading && !profileLoading && (!user || loadedUserId === user.id);
-  const loading = !initialized || fetching;
+  // Only block the application while the first workspace request is resolving.
+  // Later refreshes keep the current workspace and page mounted so tab changes,
+  // realtime updates, and permission checks do not reset local UI state.
+  const loading = !initialized || (fetching && workspaces.length === 0);
   const onboardingComplete = Boolean(
     profile?.onboarding_completed_at
     || (user && window.localStorage.getItem(onboardingKey(user.id)))

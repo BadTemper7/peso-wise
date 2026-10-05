@@ -1,13 +1,16 @@
 import { appUrl, supabase } from "../lib/supabase";
 
 export const authService = {
-  async register({ email, password, fullName }) {
+  async register({ email, password, fullName, onboardingIntent = "create" }) {
     const { data, error } = await supabase.auth.signUp({
       email: email.trim().toLowerCase(),
       password,
       options: {
         emailRedirectTo: `${appUrl}/auth/callback`,
-        data: { full_name: fullName.trim() },
+        data: {
+          full_name: fullName.trim(),
+          onboarding_intent: onboardingIntent === "join" ? "join" : "create",
+        },
       },
     });
     if (error) throw error;

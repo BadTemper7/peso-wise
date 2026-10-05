@@ -373,7 +373,7 @@ const SpendingChart = ({ transactions = [], monthLabel, selectedMonth, walletNam
               <button
                 type="button"
                 onClick={() => setFilterOpen(false)}
-                className="mt-3 h-10 w-full rounded-xl bg-slate-900 text-xs font-bold text-white transition hover:bg-slate-800 dark:bg-teal-500 dark:text-slate-950 dark:hover:bg-teal-400"
+                className="mt-3 flex h-10 w-full items-center justify-center rounded-xl bg-slate-900 text-center text-xs font-bold leading-none text-white transition hover:bg-slate-800 dark:bg-teal-500 dark:text-white dark:hover:bg-teal-400"
               >
                 Done
               </button>

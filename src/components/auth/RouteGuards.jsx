@@ -27,9 +27,13 @@ export function RequireWorkspace() {
 
 export function PublicOnly() {
   const { user, loading, initialized, configured } = useAuth();
+  const location = useLocation();
   if (!configured) return <ConfigurationNotice />;
   if (loading || !initialized) return <LoadingScreen label="Loading PesoWise…" />;
-  if (user) return <Navigate to="/dashboard" replace />;
+  if (user) {
+    const joiningFromInvite = location.pathname === "/register" && new URLSearchParams(location.search).get("mode") === "join";
+    return <Navigate to={joiningFromInvite ? "/invitations" : "/dashboard"} replace />;
+  }
   return <Outlet />;
 }
 
@@ -40,7 +44,7 @@ function WorkspaceLoadError({ error, onRetry }) {
         <img src={Logo} alt="PesoWise" className="mx-auto h-14 w-14 rounded-2xl object-contain" />
         <h1 className="mt-5 text-xl font-bold text-slate-950 dark:text-white">Could not load your workspace</h1>
         <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">{error?.message || "Check your connection and try again. Your onboarding status has not been changed."}</p>
-        <button type="button" onClick={onRetry} className="mt-6 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-teal-500 px-5 text-sm font-bold text-slate-950 hover:bg-teal-400"><FiRefreshCw /> Try again</button>
+        <button type="button" onClick={onRetry} className="mt-6 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-teal-600 px-5 text-center text-sm font-bold leading-none text-white transition hover:bg-teal-500 active:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-400"><FiRefreshCw /> Try again</button>
       </div>
     </div>
   );

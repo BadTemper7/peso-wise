@@ -7,7 +7,7 @@ export default function EmptyState({ icon: Icon = FiInbox, title, description, a
       <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-50 text-teal-600 dark:bg-teal-400/10 dark:text-teal-300"><Icon className="h-5 w-5" /></span>
       <h3 className="mt-4 text-base font-bold text-slate-900 dark:text-white">{title}</h3>
       {description && <p className="mt-2 max-w-sm text-sm leading-6 text-slate-400">{description}</p>}
-      {actionLabel && <button type="button" onClick={onAction} className="mt-5 rounded-xl bg-teal-500 px-4 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-teal-400">{actionLabel}</button>}
+      {actionLabel && <button type="button" onClick={onAction} className="mt-5 inline-flex min-h-11 items-center justify-center rounded-xl bg-teal-600 px-4 py-2.5 text-center text-sm font-bold leading-none text-white transition hover:bg-teal-500 active:bg-teal-700 disabled:opacity-60 dark:bg-teal-500 dark:hover:bg-teal-400">{actionLabel}</button>}
     </div>
   );
 }

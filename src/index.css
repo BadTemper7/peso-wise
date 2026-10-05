@@ -175,3 +175,13 @@ select option:disabled {
   color: #ffffff !important;
   background-color: #1e3a52 !important;
 }
+
+/* Keep icon-and-label controls visually centered across browsers. */
+button > svg,
+a > svg {
+  flex-shrink: 0;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}

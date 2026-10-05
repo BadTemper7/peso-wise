@@ -34,13 +34,13 @@ const BalanceCard = ({ wallet, onTransfer, onAddIncome, onAddExpense }) => {
         </h2>
 
         <div className="mt-7 flex flex-wrap gap-2">
-          <button type="button" onClick={onTransfer} className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-bold text-[#0b4d86] transition hover:bg-slate-100">
+          <button type="button" onClick={onTransfer} className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-bold text-[#0b4d86] transition hover:bg-slate-100">
             <FiRepeat className="h-4 w-4" /> Transfer
           </button>
-          <button type="button" onClick={onAddIncome} className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-xs font-bold text-white ring-1 ring-inset ring-white/15 transition hover:bg-white/15">
+          <button type="button" onClick={onAddIncome} className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-xs font-bold text-white ring-1 ring-inset ring-white/15 transition hover:bg-white/15">
             <FiPlus className="h-4 w-4" /> Income
           </button>
-          <button type="button" onClick={onAddExpense} className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-xs font-bold text-white ring-1 ring-inset ring-white/15 transition hover:bg-white/15">
+          <button type="button" onClick={onAddExpense} className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-xs font-bold text-white ring-1 ring-inset ring-white/15 transition hover:bg-white/15">
             <FiMinus className="h-4 w-4" /> Expense
           </button>
         </div>

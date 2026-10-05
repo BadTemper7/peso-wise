@@ -4,6 +4,11 @@ export function SkeletonBlock({ className = "", ...props }) {
   return <div {...props} aria-hidden="true" className={`skeleton-shimmer rounded-xl ${className}`} />;
 }
 
+
+export function ButtonSkeleton({ className = "" }) {
+  return <SkeletonBlock className={`inline-flex h-11 min-w-32 items-center justify-center rounded-xl ${className}`} />;
+}
+
 export function DashboardSkeleton() {
   return (
     <div className="mx-auto w-full max-w-[1500px]" aria-label="Loading dashboard content">
@@ -21,10 +26,10 @@ export function DashboardSkeleton() {
         <section>
           <div className="flex items-start justify-between">
             <div className="space-y-2"><SkeletonBlock className="h-3 w-36" /><SkeletonBlock className="h-10 w-52" /><SkeletonBlock className="h-3 w-32" /></div>
-            <SkeletonBlock className="h-10 w-32" />
+            <ButtonSkeleton className="h-10 w-32 min-w-0" />
           </div>
           <div className="mt-4 flex gap-3 overflow-hidden">
-            {[0, 1, 2, 3].map((item) => <SkeletonBlock key={item} className="h-[120px] min-w-[168px] flex-1" />)}
+            {[0, 1, 2, 3].map((item) => <SkeletonBlock key={item} className="h-[134px] min-w-[168px] flex-1 rounded-[16px]" />)}
           </div>
           <div className="mt-4 grid max-w-lg grid-cols-4 gap-3">
             {[0, 1, 2, 3].map((item) => <div key={item} className="flex flex-col items-center gap-2"><SkeletonBlock className="h-11 w-11 rounded-full" /><SkeletonBlock className="h-3 w-12" /></div>)}
@@ -96,7 +101,7 @@ function HeaderSkeleton() {
   return (
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div className="space-y-2"><SkeletonBlock className="h-3 w-32" /><SkeletonBlock className="h-9 w-56" /><SkeletonBlock className="h-4 w-80 max-w-full" /></div>
-      <SkeletonBlock className="h-11 w-36" />
+      <ButtonSkeleton className="w-36" />
     </div>
   );
 }
