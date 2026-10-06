@@ -205,6 +205,21 @@ export default function Dashboard() {
     return { income, expenses, cashFlow: income - expenses };
   }, [state.transactions]);
 
+  // Total balance across all non-savings wallets.
+  // Uses the presented `wallets` array so it matches the amount shown on each WalletCard.
+  const totalRegularBalance = useMemo(
+    () =>
+      wallets
+        .filter((wallet) => !wallet.is_savings)
+        .reduce((sum, wallet) => sum + Number(wallet.balance || 0), 0),
+    [wallets],
+  );
+
+  const regularWalletCount = useMemo(
+    () => wallets.filter((wallet) => !wallet.is_savings).length,
+    [wallets],
+  );
+
   const monthEnd = useMemo(() => {
     const regular = state.wallets.filter((wallet) => !wallet.is_savings);
     return {
@@ -435,7 +450,7 @@ export default function Dashboard() {
             <div>
               <div className="flex items-center gap-2">
                 <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                  Selected wallet balance
+                  Total wallet balance
                 </p>
                 <button
                   type="button"
@@ -453,15 +468,14 @@ export default function Dashboard() {
                 {hideBalance
                   ? "₱••••••"
                   : formatCurrency(
-                      activeWallet.balance,
+                      totalRegularBalance,
                       activeWorkspace.currency,
                     )}
               </h2>
               <p className="mt-1.5 text-[10px] text-slate-400">
-                {activeWallet.name} · {activeWallet.label} · Created by{" "}
-                {activeWallet.creatorName ||
-                  activeWallet.creator?.full_name ||
-                  "Workspace member"}
+                Across {regularWalletCount} wallet
+                {regularWalletCount !== 1 ? "s" : ""} ·{" "}
+                {monthLabel(selectedMonth)}
               </p>
             </div>
             <div className="flex flex-col items-end gap-2">
